@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Source.CosmosDbService;
+using Source.Models;
 
 namespace Source.Controllers
 {
@@ -12,10 +14,12 @@ namespace Source.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly CosmosDbConnection _cosmosDbConnection;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, CosmosDbConnection cosmosDbConnection)
         {
             _logger = logger;
+            _cosmosDbConnection = cosmosDbConnection;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -28,6 +32,12 @@ namespace Source.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost]
+        public async Task<User> Post()
+        {
+            return await _cosmosDbConnection.AddUserAsync();
         }
     }
 }
